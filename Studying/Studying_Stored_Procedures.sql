@@ -94,12 +94,50 @@ PRINT @EmployeeTotal
 sp_help spGetEmployeeCountByGender
 
 
+-- output params or return values
 
+-- CREATE PROC 1 with an OUT param
+CREATE PROC spGetTotalCount1
+@TotalCount int OUT
+AS
+BEGIN
+	SELECT @TotalCount = COUNT([Id]) 
+	FROM tblDepartment
+END
 
+DECLARE @Total int
+EXEC spGetTotalCount1 @Total OUT
+SELECT @Total AS TotalEmployees
 
+-- CREATE PROC 2 without an OUT param // using return values
+CREATE PROC spGetTotalCount2
+AS
+BEGIN
+	RETURN (SELECT 
+				COUNT([Id]) 
+			FROM 
+				tblDepartment
+)
+END
 
+DECLARE @Total int
+EXEC @Total = spGetTotalCount2
+SELECT @Total AS 'TotalEmployees'
 
+-- CREATE PROC 3 using params and OUT
+CREATE PROC spGetNameById1
+@Id int,
+@Name nvarchar(20) OUT
+AS
+BEGIN
+	SELECT @Name = [Name] 
+	FROM tblDepartment 
+	WHERE [Id] = @Id
+END
 
+DECLARE @Name nvarchar(20)
+EXEC spGetNameById1 1, @Name OUT
+SELECT AS 'FullName'
 
 
 
